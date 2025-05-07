@@ -11,44 +11,83 @@ const server = new McpServer({
 });
 
 // Add a stock price fetching tool
+// 添加 historical stock data 工具
 server.tool(
-	"yahoo_stock_history",
-	{
-		symbol: z.string(),
-		period: z.string(),
-		interval: z.enum(["1d", "1wk", "1mo"]).optional(),
-	},
-	async ({ symbol, period, interval = "1d" }) => {
-		try {
-			const queryOptions = {
-				period1: getStartDate(period),
-				period2: new Date(),
-				interval: interval as "1d" | "1wk" | "1mo",
-			};
-
-			const result = await yahooFinance.historical(symbol, queryOptions);
-
-			return {
-				content: [
-					{
-						type: "text",
-						text: JSON.stringify(result, null, 2),
-					},
-				],
-			};
-		} catch (error: unknown) {
-			const errorMessage =
-				error instanceof Error ? error.message : "Unknown error occurred";
-			return {
-				content: [
-					{
-						type: "text",
-						text: `Error: ${errorMessage}`,
-					},
-				],
-			};
-		}
-	},
+  "yahoo_stock_history",
+  {
+    symbol: z.string(),
+    period: z.string().optional(),
+    period1: z.union([z.string(), z.date()]).optional(),
+    period2: z.union([z.string(), z.date()]).optional(),
+    interval: z.enum(["1d", "1wk", "1mo"]).optional(),
+    events: z.string().optional(),
+    includeAdjustedClose: z.boolean().optional(),
+    lang: z.string().optional(),
+    region: z.string().optional(),
+  },
+  async ({ symbol, period, period1, period2, interval = "1d", events, includeAdjustedClose, lang, region }) => {
+    try {
+      const queryOptions = {
+        // 如果直接提供了period1，使用它；否则尝试根据period计算
+        period1: period1 || (period ? getStartDate(period) : undefined),
+        period2: period2 || new Date(),
+        interval: interval as "1d" | "1wk" | "1mo",
+      };
+      
+      // 添加可选参数，只在明确设置时添加
+      if (events !== undefined) {
+        queryOptions.events = events;
+      }
+      
+      if (includeAdjustedClose !== undefined) {
+        queryOptions.includeAdjustedClose = includeAdjustedClose;
+      }
+      
+      // 添加通用选项
+      if (lang !== undefined) {
+        queryOptions.lang = lang;
+      }
+      
+      if (region !== undefined) {
+        queryOptions.region = region;
+      }
+      
+      // 检查必要的参数
+      if (!queryOptions.period1) {
+        throw new Error("必须提供period或period1参数");
+      }
+      
+      const result = await yahooFinance.historical(symbol, queryOptions);
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
+    } catch (error: unknown) {
+      let errorMessage = "Unknown error occurred";
+      
+      if (error instanceof Error) {
+        errorMessage = error.message;
+        
+        // 对特定错误提供更友好的消息
+        if (errorMessage.includes("Not Found")) {
+          errorMessage = `股票代码 "${symbol}" 未找到或已退市。Yahoo Finance不再提供已退市股票的历史数据。`;
+        }
+      }
+      
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Error: ${errorMessage}`,
+          },
+        ],
+      };
+    }
+  },
 );
 
 // 添加 chart 工具 - 获取图表数据
