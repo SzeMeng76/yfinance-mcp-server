@@ -12,7 +12,7 @@ const server = new McpServer({
 
 // Add a stock price fetching tool
 server.tool(
-	"getStockHistory",
+	"yahoo_stock_history",
 	{
 		symbol: z.string(),
 		period: z.string(),
