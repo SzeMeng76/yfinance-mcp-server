@@ -1,6 +1,6 @@
 {
-	"name": "@onori/yfinance-mcp-server",
-	"version": "0.0.3",
+	"name": "@szemeng76/yfinance-mcp-server",
+	"version": "0.0.1",
 	"description": "unofficial Yahoo Finance API MCP Server - A Model Context Protocol server implementation for Yahoo Finance API",
 	"main": "build/index.js",
 	"bin": {
@@ -12,7 +12,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/onori/yfinance-mcp-server.git"
+		"url": "git+https://github.com/SzeMeng76/yfinance-mcp-server.git"
 	},
 	"keywords": [
 		"yahoo-finance",
@@ -21,22 +21,22 @@
 		"finance",
 		"stock"
 	],
-	"author": "onori",
+	"author": "SzeMeng76",
 	"license": "ISC",
 	"type": "module",
 	"files": [
 		"build"
 	],
 	"dependencies": {
-		"@modelcontextprotocol/sdk": "^1.8.0",
+		"@modelcontextprotocol/sdk": "^1.11.0",
 		"yahoo-finance2": "^2.13.3",
-		"zod": "^3.24.2"
+		"zod": "^3.24.4"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@types/node": "^22.14.0",
-		"esbuild": "^0.25.2",
-		"tsx": "^4.19.3",
+		"@types/node": "^22.15.14",
+		"esbuild": "^0.25.4",
+		"tsx": "^4.19.4",
 		"typescript": "^5.8.3"
 	}
 }
