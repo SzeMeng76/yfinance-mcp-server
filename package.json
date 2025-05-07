@@ -1,42 +1,45 @@
 {
-	"name": "@szemeng76/yfinance-mcp-server",
-	"version": "0.0.1",
-	"description": "unofficial Yahoo Finance API MCP Server - A Model Context Protocol server implementation for Yahoo Finance API",
-	"main": "build/index.js",
-	"bin": {
-		"yfinance-mcp-server": "build/index.js"
-	},
-	"scripts": {
-		"dev": "tsx --watch ./src/index.ts",
-		"build": "esbuild src/index.ts --minify --bundle --platform=node --format=esm --outfile=build/index.js"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/SzeMeng76/yfinance-mcp-server.git"
-	},
-	"keywords": [
-		"yahoo-finance",
-		"mcp",
-		"model-context-protocol",
-		"finance",
-		"stock"
-	],
-	"author": "SzeMeng76",
-	"license": "ISC",
-	"type": "module",
-	"files": [
-		"build"
-	],
-	"dependencies": {
-		"@modelcontextprotocol/sdk": "^1.11.0",
-		"yahoo-finance2": "^2.13.3",
-		"zod": "^3.24.4"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
-		"@types/node": "^22.15.14",
-		"esbuild": "^0.25.4",
-		"tsx": "^4.19.4",
-		"typescript": "^5.8.3"
-	}
+  "name": "@szemeng76/yfinance-mcp-server",
+  "version": "0.0.2",
+  "description": "unofficial Yahoo Finance API MCP Server - A Model Context Protocol server implementation for Yahoo Finance API",
+  "main": "build/index.js",
+  "bin": {
+    "yfinance-mcp-server": "build/index.js"
+  },
+  "scripts": {
+    "dev": "tsx --watch ./src/index.ts",
+    "build": "esbuild src/index.ts --minify --bundle --platform=node --format=esm --outfile=build/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SzeMeng76/yfinance-mcp-server.git"
+  },
+  "keywords": [
+    "yahoo-finance",
+    "mcp",
+    "model-context-protocol",
+    "finance",
+    "stock"
+  ],
+  "author": "SzeMeng76",
+  "license": "ISC",
+  "type": "module",
+  "files": [
+    "build"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.11.0",
+    "yahoo-finance2": "^2.13.3",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@types/node": "^22.15.14",
+    "esbuild": "^0.25.4",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
 }
