@@ -10,7 +10,6 @@ const server = new McpServer({
 	version: "0.0.1",
 });
 
-// Add a stock price fetching tool
 // 添加 historical stock data 工具
 server.tool(
   "yahoo_stock_history",
@@ -249,26 +248,12 @@ server.tool(
       if (enableNavLinks !== undefined) queryOptions.enableNavLinks = enableNavLinks;
       if (enableEnhancedTrivialQuery !== undefined) queryOptions.enableEnhancedTrivialQuery = enableEnhancedTrivialQuery;
       
-      const result = await yahooFinance.search(query, queryOptions);
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify(result, null, 2),
-          },
-        ],
-      };
+      // 直接返回结果，不进行JSON字符串化
+      return await yahooFinance.search(query, queryOptions);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error occurred";
-      return {
-        content: [
-          {
-            type: "text",
-            text: `Error: ${errorMessage}`,
-          },
-        ],
-      };
+      throw new Error(`Yahoo Finance search error: ${errorMessage}`);
     }
   }
 );
