@@ -233,6 +233,40 @@ server.tool(
     enableEnhancedTrivialQuery
   }) => {
     try {
+      // 基本参数验证
+      if (!query || query.trim() === '') {
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({
+                error: "查询不能为空",
+                quotes: [],
+                news: []
+              }, null, 2),
+            },
+          ],
+        };
+      }
+      
+      // 默认添加财经相关的关键词，使查询更有效
+      // 如果查询不包含任何财经关键词，可以考虑添加
+      let enhancedQuery = query;
+      if (!query.toLowerCase().includes('stock') && 
+          !query.toLowerCase().includes('finance') && 
+          !query.toLowerCase().includes('market') &&
+          !query.toLowerCase().includes('company') &&
+          !query.toLowerCase().includes('股票') &&
+          !query.toLowerCase().includes('财经') &&
+          !query.toLowerCase().includes('公司')) {
+        // 对于非财经搜索，可以添加"news"关键词确保有结果返回
+        // 注：添加财经关键词后可能导致与用户查询意图不一致
+        if (!query.toLowerCase().includes('news') && 
+            !query.toLowerCase().includes('新闻')) {
+          enhancedQuery = `${query} news`;
+        }
+      }
+      
       const queryOptions = {};
       
       // 添加可选参数
@@ -248,16 +282,50 @@ server.tool(
       if (enableNavLinks !== undefined) queryOptions.enableNavLinks = enableNavLinks;
       if (enableEnhancedTrivialQuery !== undefined) queryOptions.enableEnhancedTrivialQuery = enableEnhancedTrivialQuery;
       
-      // 执行搜索
-      const result = await yahooFinance.search(query, queryOptions);
+      // 使用可能增强过的查询
+      const result = await yahooFinance.search(enhancedQuery, queryOptions);
       
-      // 直接返回结果对象，不进行JSON字符串化
-      // 这样助手可以直接访问结果的属性
-      return result;
+      // 添加一个meta字段，帮助助手理解结果状态
+      const resultWithMeta = {
+        ...result,
+        meta: {
+          originalQuery: query,
+          enhancedQuery: enhancedQuery !== query ? enhancedQuery : undefined,
+          hasQuotes: result.quotes && result.quotes.length > 0,
+          hasNews: result.news && result.news.length > 0,
+          totalResults: (result.quotes?.length || 0) + (result.news?.length || 0)
+        }
+      };
+      
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(resultWithMeta, null, 2),
+          },
+        ],
+      };
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error occurred";
-      throw new Error(`Yahoo Finance search error: ${errorMessage}`);
+      
+      // 返回结构化错误，便于助手理解和处理
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify({
+              error: errorMessage,
+              quotes: [],
+              news: [],
+              meta: {
+                isError: true,
+                originalQuery: query
+              }
+            }, null, 2),
+          },
+        ],
+      };
     }
   }
 );
