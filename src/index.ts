@@ -10,7 +10,7 @@ const server = new McpServer({
 	version: "0.0.1",
 });
 
-// Add a stock price fetching tool
+// 添加 historical stock data 工具
 server.tool(
   "yahoo_stock_history",
   {
