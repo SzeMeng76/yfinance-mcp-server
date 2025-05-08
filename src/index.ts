@@ -248,8 +248,12 @@ server.tool(
       if (enableNavLinks !== undefined) queryOptions.enableNavLinks = enableNavLinks;
       if (enableEnhancedTrivialQuery !== undefined) queryOptions.enableEnhancedTrivialQuery = enableEnhancedTrivialQuery;
       
-      // 直接返回结果，不进行JSON字符串化
-      return await yahooFinance.search(query, queryOptions);
+      // 执行搜索
+      const result = await yahooFinance.search(query, queryOptions);
+      
+      // 直接返回结果对象，不进行JSON字符串化
+      // 这样助手可以直接访问结果的属性
+      return result;
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error occurred";
