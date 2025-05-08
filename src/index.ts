@@ -10,6 +10,7 @@ const server = new McpServer({
 	version: "0.0.1",
 });
 
+// Add a stock price fetching tool
 // 添加 historical stock data 工具
 server.tool(
   "yahoo_stock_history",
@@ -203,29 +204,52 @@ server.tool(
 
 // 添加 search 工具 - 搜索股票功能
 server.tool(
-  "yahoo_quote_summary",
+  "yahoo_search",
   {
-    symbol: z.string(),
-    modules: z.array(z.string()).optional(),
+    query: z.string(),
     lang: z.string().optional(),
     region: z.string().optional(),
+    quotesCount: z.number().optional(),
+    newsCount: z.number().optional(),
+    enableFuzzyQuery: z.boolean().optional(),
+    quotesQueryId: z.string().optional(),
+    multiQuoteQueryId: z.string().optional(),
+    newsQueryId: z.string().optional(),
+    enableCb: z.boolean().optional(),
+    enableNavLinks: z.boolean().optional(),
+    enableEnhancedTrivialQuery: z.boolean().optional(),
   },
-  async ({ symbol, modules = ["price", "summaryDetail"], lang, region }) => {
+  async ({ 
+    query, 
+    lang, 
+    region, 
+    quotesCount, 
+    newsCount, 
+    enableFuzzyQuery,
+    quotesQueryId,
+    multiQuoteQueryId,
+    newsQueryId,
+    enableCb,
+    enableNavLinks,
+    enableEnhancedTrivialQuery
+  }) => {
     try {
-      const queryOptions = {
-        modules
-      };
+      const queryOptions = {};
       
       // 添加可选参数
-      if (lang !== undefined) {
-        queryOptions.lang = lang;
-      }
+      if (lang !== undefined) queryOptions.lang = lang;
+      if (region !== undefined) queryOptions.region = region;
+      if (quotesCount !== undefined) queryOptions.quotesCount = quotesCount;
+      if (newsCount !== undefined) queryOptions.newsCount = newsCount;
+      if (enableFuzzyQuery !== undefined) queryOptions.enableFuzzyQuery = enableFuzzyQuery;
+      if (quotesQueryId !== undefined) queryOptions.quotesQueryId = quotesQueryId;
+      if (multiQuoteQueryId !== undefined) queryOptions.multiQuoteQueryId = multiQuoteQueryId;
+      if (newsQueryId !== undefined) queryOptions.newsQueryId = newsQueryId;
+      if (enableCb !== undefined) queryOptions.enableCb = enableCb;
+      if (enableNavLinks !== undefined) queryOptions.enableNavLinks = enableNavLinks;
+      if (enableEnhancedTrivialQuery !== undefined) queryOptions.enableEnhancedTrivialQuery = enableEnhancedTrivialQuery;
       
-      if (region !== undefined) {
-        queryOptions.region = region;
-      }
-      
-      const result = await yahooFinance.quoteSummary(symbol, queryOptions);
+      const result = await yahooFinance.search(query, queryOptions);
       return {
         content: [
           {
