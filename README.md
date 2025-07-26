@@ -1,186 +1,283 @@
-# yfinance-mcp-server
-[中文版](./README-cn.md)
+# 📊 YFinance MCP Server
 
-**Important Note: This is an unofficial MCP server.**
-A Message Control Protocol (MCP) server for accessing Yahoo Finance data. This server provides a simple interface to retrieve stock market data through yahoo-finance2.
-## Features
-- Get historical stock data with customizable periods and intervals
-- Search for stocks, ETFs, and other financial instruments
-- Retrieve detailed quote information for specific symbols
-- Access comprehensive financial data summaries
-- Obtain chart data with various time frames and granularity
-- Easy to use with any MCP client
-- Built with TypeScript for type safety and better developer experience
-## Usage
-Example Cursor MCP Client.
+**[中文版](./README_ZH.md)** | **English**
+
+> Unofficial MCP server for accessing Yahoo Finance stock data
+
+## 🎯 Overview
+
+A lightweight Model Context Protocol (MCP) server that provides access to Yahoo Finance data through the yahoo-finance2 library. Built with TypeScript and designed for seamless integration with AI assistants and MCP-compatible clients.
+
+## ✨ Features
+
+- 📈 **Historical Stock Data**: Fetch historical prices with flexible time periods and intervals
+- 📊 **Chart Data**: Get detailed chart information with pre/post market data and events
+- 💰 **Real-time Quotes**: Retrieve current stock quotes for single or multiple symbols
+- 🔍 **Stock Search**: Search for stocks, ETFs, and financial instruments
+- 📋 **Quote Summary**: Access comprehensive financial data and company information
+- 🌍 **Multi-language Support**: Configurable language and region settings
+- 🔧 **TypeScript**: Full type safety with Zod schema validation
+
+## 📦 Installation
+
+```bash
+npm install @szemeng76/yfinance-mcp-server
+```
+
+## 🔧 Configuration
+
+### Cursor IDE
 ```json
 {
   "mcpServers": {
     "yfinance": {
       "command": "npx",
-      "args": [
-        "@szemeng76/yfinance-mcp-server"
-      ]
+      "args": ["@szemeng76/yfinance-mcp-server"]
     }
   }
 }
 ```
 
-### yahoo_stock_history
-Retrieves historical stock data for a given symbol.
-Parameters:
-- `symbol` (required): The stock symbol (e.g., "AAPL" for Apple Inc.)
-- `period` (required): Time period to fetch data for (e.g., "1d", "5d", "1mo", "3mo", "6mo", "1y", "2y", "5y", "10y", "ytd", "max")
-- `interval` (optional): Data interval ("1d", "1wk", "1mo")
-
-Example MCP request:
-```markdown
-> (Request) 
-Please use the `yahoo_stock_history` tool to fetch the daily stock data for AAPL for the past week (`period`='1w', `interval`='1d'). Then, render the results as a markdown table.
-> (Response Example)
-I'll help you fetch Apple's stock data and format it nicely as a markdown table.
-First, I'll call the yahoo_stock_history tool to fetch the data:
-Let me format this data into a more readable markdown table:
-| Date | Open | High | Low | Close | Volume |
-|------|------|------|-----|-------|---------|
-| Mar 31, 2025 | $217.01 | $225.62 | $216.23 | $222.13 | 65.30M |
-| Apr 1, 2025 | $219.81 | $223.68 | $218.90 | $223.19 | 36.41M |
-| Apr 2, 2025 | $221.32 | $225.19 | $221.02 | $223.89 | 35.91M |
-| Apr 3, 2025 | $205.54 | $207.49 | $201.25 | $203.19 | 103.42M |
-| Apr 4, 2025 | $193.89 | $199.88 | $187.34 | $188.38 | 125.57M |
+### Claude Desktop
+```json
+{
+  "mcpServers": {
+    "yfinance": {
+      "command": "npx", 
+      "args": ["@szemeng76/yfinance-mcp-server"]
+    }
+  }
+}
 ```
 
-### yahoo_chart
-Retrieves chart data with more flexible options than yahoo_stock_history.
-Parameters:
-- `symbol` (required): The stock symbol (e.g., "AAPL" for Apple Inc.)
-- `period1` (optional): Starting period - can be a Date object, string, or unix timestamp
-- `period2` (optional): Ending period (defaults to current date)
-- `interval` (optional): Data interval ("1m", "2m", "5m", "15m", "30m", "60m", "90m", "1h", "1d", "5d", "1wk", "1mo", "3mo")
-- `includePrePost` (optional): Include pre and post market data (boolean)
-- `events` (optional): Event types to return, "|"-separated (e.g., "div|split|earn")
+### VS Code with GitHub Copilot
+```json
+{
+  "mcp.servers": {
+    "yfinance": {
+      "command": "npx",
+      "args": ["@szemeng76/yfinance-mcp-server"],
+      "transport": "stdio"
+    }
+  }
+}
+```
+
+## 🛠️ Available Tools
+
+### `yahoo_stock_history`
+Fetches historical stock data with comprehensive options.
+
+**Parameters:**
+- `symbol` (required): Stock symbol (e.g., "AAPL", "TSLA")
+- `period` (optional): Time period string ("1d", "1w", "1m", "3m", "6m", "1y")
+- `period1` (optional): Custom start date (string, Date, or timestamp)
+- `period2` (optional): Custom end date (string, Date, or timestamp)
+- `interval` (optional): Data interval - "1d", "1wk", "1mo" (default: "1d")
+- `events` (optional): Event types to include (e.g., "div|split")
+- `includeAdjustedClose` (optional): Include adjusted close prices (boolean)
+- `lang` (optional): Language code
+- `region` (optional): Region code
+
+**Example:**
+```
+"Get Apple's historical data for the past 3 months with weekly intervals"
+```
+
+### `yahoo_chart`
+Retrieves detailed chart data with advanced options.
+
+**Parameters:**
+- `symbol` (required): Stock symbol
+- `period1` (optional): Start date/time (string, Date, or number)
+- `period2` (optional): End date/time (default: current date)
+- `interval` (optional): Time interval - "1m", "2m", "5m", "15m", "30m", "60m", "90m", "1h", "1d", "5d", "1wk", "1mo", "3mo" (default: "1d")
+- `useYfid` (optional): Use Yahoo Finance ID (boolean)
+- `includePrePost` (optional): Include pre/post market data (boolean)
+- `events` (optional): Event types (string)
+- `lang` (optional): Language code
 - `return` (optional): Return format - "array" or "object"
 
-Example MCP request:
-```markdown
-> (Request)
-Please use the `yahoo_chart` tool to fetch Apple's stock data for the past month with daily intervals. I'd like to see dividend events too.
-> (Response Example)
-I'll fetch Apple's stock chart data for the past month including dividend events:
-
-The chart data shows daily price movements for Apple stock over the past month. I can see the data includes:
-- Daily OHLC (open, high, low, close) prices 
-- Trading volumes
-- A dividend payment of $0.24 per share on April 7, 2025
-
-Would you like me to visualize this data or analyze any specific aspects of it?
+**Example:**
+```
+"Show Tesla's intraday chart with 5-minute intervals including pre-market data"
 ```
 
-### yahoo_quote
-Retrieves current quote information for one or multiple symbols.
-Parameters:
-- `symbols` (required): Single stock symbol or array of symbols (e.g., "AAPL" or ["AAPL", "MSFT"])
-- `fields` (optional): Array of specific fields to return
+### `yahoo_quote`
+Gets current quote information for one or multiple symbols.
+
+**Parameters:**
+- `symbols` (required): Single symbol (string) or multiple symbols (array)
+- `fields` (optional): Specific fields to return (array of strings)
 - `return` (optional): Return format - "array", "map", or "object"
 
-Example MCP request:
-```markdown
-> (Request)
-Can you get the current quote information for both Apple and Microsoft using the `yahoo_quote` tool?
-> (Response Example)
-I'll retrieve the current quote information for both Apple and Microsoft:
-
-Based on the data from Yahoo Finance, here's the current market information:
-
-Apple (AAPL):
-- Current Price: $188.38
-- Market Cap: $2.94T
-- P/E Ratio: 31.1
-- 52-Week Range: $156.72 - $227.11
-
-Microsoft (MSFT):
-- Current Price: $410.34
-- Market Cap: $3.05T
-- P/E Ratio: 35.6
-- 52-Week Range: $309.45 - $428.74
-
-Both stocks are currently trading in the regular market session.
+**Example:**
+```
+"Get current quotes for Apple, Microsoft, and Google"
 ```
 
-### yahoo_search
-Searches for financial instruments matching a query.
-Parameters:
-- `query` (required): Search term (e.g., "apple", "tech", "S&P")
-- `quotesCount` (optional): Maximum number of quotes to return
-- `newsCount` (optional): Maximum number of news items to return
-- Many additional optional parameters for fine-tuning results
+### `yahoo_search`
+Searches for financial instruments with advanced filtering.
 
-Example MCP request:
-```markdown
-> (Request)
-Can you search for companies related to artificial intelligence using the `yahoo_search` tool?
-> (Response Example)
-I'll search for companies related to artificial intelligence:
+**Parameters:**
+- `query` (required): Search term
+- `lang` (optional): Language code
+- `region` (optional): Region code
+- `quotesCount` (optional): Maximum quotes to return (number)
+- `newsCount` (optional): Maximum news items to return (number)
+- `enableFuzzyQuery` (optional): Enable fuzzy search (boolean)
+- `quotesQueryId` (optional): Quotes query ID (string)
+- `multiQuoteQueryId` (optional): Multi-quote query ID (string)
+- `newsQueryId` (optional): News query ID (string)
+- `enableCb` (optional): Enable callback (boolean)
+- `enableNavLinks` (optional): Enable navigation links (boolean)
+- `enableEnhancedTrivialQuery` (optional): Enhanced trivial query (boolean)
 
-Here are some top companies related to artificial intelligence based on the search results:
-
-1. NVIDIA Corporation (NVDA)
-2. Microsoft Corporation (MSFT)
-3. Alphabet Inc. (GOOGL)
-4. Amazon.com, Inc. (AMZN)
-5. C3.ai, Inc. (AI)
-6. Palantir Technologies Inc. (PLTR)
-
-The search also returned some related industry ETFs and recent news articles about AI developments in the market.
-
-Would you like more detailed information about any of these companies or additional search results?
+**Example:**
+```
+"Search for renewable energy companies with 10 results and news"
 ```
 
-### yahoo_quote_summary
-Retrieves comprehensive financial data for a symbol.
-Parameters:
-- `symbol` (required): The stock symbol (e.g., "AAPL")
-- `modules` (optional): Array of data modules to retrieve (defaults to ["price", "summaryDetail"])
-- Many available modules including: assetProfile, balanceSheetHistory, cashflowStatementHistory, defaultKeyStatistics, earnings, financialData, incomeStatementHistory, etc.
+### `yahoo_quote_summary`
+Retrieves comprehensive financial data and company information.
 
-Example MCP request:
-```markdown
-> (Request)
-Can you get a financial summary for Tesla using the `yahoo_quote_summary` tool? I'm interested in the price and key statistics.
-> (Response Example)
-I'll retrieve financial summary data for Tesla focusing on price and key statistics:
+**Parameters:**
+- `symbol` (required): Stock symbol
+- `modules` (optional): Data modules to fetch (array, default: ["price", "summaryDetail"])
+- `lang` (optional): Language code
+- `region` (optional): Region code
 
-Tesla (TSLA) Financial Summary:
+**Available modules include:**
+- `price` - Current price data
+- `summaryDetail` - Key statistics
+- `assetProfile` - Company profile
+- `balanceSheetHistory` - Balance sheet data
+- `cashflowStatementHistory` - Cash flow statements
+- `defaultKeyStatistics` - Key financial metrics
+- `earnings` - Earnings data
+- `financialData` - Financial ratios
+- `incomeStatementHistory` - Income statements
+- And many more...
 
-Current Price Information:
-- Regular Market Price: $172.63
-- Day Range: $168.42 - $174.91
-- 52-Week Range: $138.80 - $299.29
-- Market Cap: $550.2B
-
-Key Statistics:
-- P/E Ratio: 50.14
-- EPS (TTM): $3.44
-- Forward P/E: 42.08
-- PEG Ratio: 1.79
-- Price to Book: 9.12
-- Revenue Growth (YoY): 8.2%
-
-The stock is currently trading on the NasdaqGS exchange in regular market hours.
+**Example:**
+```
+"Get Tesla's complete financial summary including earnings and balance sheet"
 ```
 
-## Development
-To set up the development environment:
-1. Clone the repository
-2. Install dependencies:
+## 🎮 Usage Examples
+
+### Investment Analysis
+```
+"Compare the 6-month performance of AAPL, MSFT, and GOOGL with weekly data"
+```
+
+### Market Research
+```
+"Search for artificial intelligence companies and show their current P/E ratios"
+```
+
+### Technical Analysis
+```
+"Get TSLA's hourly chart for the past week with volume and dividend events"
+```
+
+### Portfolio Tracking
+```
+"Show me current quotes for my portfolio: AAPL, TSLA, NVDA, AMD"
+```
+
+## 🏗️ Development
+
+### Local Setup
+
 ```bash
+# Clone the repository
+git clone https://github.com/SzeMeng76/yfinance-mcp-server.git
+cd yfinance-mcp-server
+
+# Install dependencies
 npm install
+
+# Build the project
+npm run build
+
+# Start the server
+npm start
 ```
-3. Start the development server:
-```bash
-npm run dev
+
+### Project Structure
+
 ```
-## Contributing
-Contributions are welcome! Please feel free to submit a Pull Request.
-## License
-ISC License (ISC)
+yfinance-mcp-server/
+├── src/
+│   └── index.ts          # Main MCP server implementation
+├── package.json          # Dependencies and scripts
+├── tsconfig.json         # TypeScript configuration
+└── README.md            # Documentation
+```
+
+### Core Dependencies
+
+- **@modelcontextprotocol/sdk**: Official MCP server framework
+- **yahoo-finance2**: Yahoo Finance API client library
+- **zod**: Runtime type validation and schema definition
+
+## 🔧 Technical Details
+
+### Error Handling
+The server includes comprehensive error handling:
+- Friendly error messages for common issues
+- Special handling for delisted stocks
+- Graceful fallbacks for missing data
+
+### Date Handling
+Smart date conversion with the `getStartDate` helper function:
+- Supports period shortcuts ("1d", "1w", "1m", etc.)
+- Handles multiple date formats (string, Date object, timestamp)
+- Automatic fallback to sensible defaults
+
+### Type Safety
+Full TypeScript implementation with Zod schemas ensures:
+- Runtime parameter validation
+- Clear API contracts
+- Better development experience
+
+## ⚠️ Important Notes
+
+### Rate Limiting
+- Yahoo Finance has implicit rate limits
+- Avoid making too many rapid requests
+- Consider implementing client-side caching
+
+### Data Accuracy
+- Data provided by Yahoo Finance may have delays
+- Verify critical information with official sources
+- This tool is for informational purposes only
+
+### Symbols and Markets
+- Supports global stock markets
+- Use proper symbol formats (e.g., "AAPL" for US, "0700.HK" for Hong Kong)
+- Some delisted stocks may not return historical data
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Make your changes with proper TypeScript types
+4. Test thoroughly with different symbols and parameters
+5. Submit a pull request with clear description
+
+## 📄 License
+
+ISC License - see [LICENSE](LICENSE) file for details.
+
+## ⚖️ Disclaimer
+
+- **Unofficial Tool**: Not affiliated with Yahoo Finance or Verizon Media
+- **Data Source**: All data provided by Yahoo Finance public APIs
+- **Investment Risk**: For informational purposes only, not investment advice
+- **Accuracy**: Always verify important financial data with official sources
+
+---
+
+*Built with ❤️ for the AI and Finance communities*
