@@ -1,6 +1,6 @@
 {
   "name": "@szemeng76/yfinance-mcp-server",
-  "version": "0.0.10",
+  "version": "0.1.0",
   "description": "unofficial Yahoo Finance API MCP Server - A Model Context Protocol server implementation for Yahoo Finance API",
   "main": "build/index.js",
   "bin": {
@@ -31,15 +31,15 @@
     "access": "public"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.11.0",
+    "@modelcontextprotocol/sdk": "^1.17.3",
     "yahoo-finance2": "^2.13.3",
-    "zod": "^3.24.4"
+    "zod": "^4.0.17"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "@types/node": "^22.15.14",
-    "esbuild": "^0.25.4",
-    "tsx": "^4.19.4",
-    "typescript": "^5.8.3"
+    "@biomejs/biome": "2.2.0",
+    "@types/node": "^24.3.0",
+    "esbuild": "^0.25.9",
+    "tsx": "^4.20.4",
+    "typescript": "^5.9.2"
   }
 }
